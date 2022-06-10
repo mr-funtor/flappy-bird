@@ -14,7 +14,7 @@ export default function App() {
     useEffect(()=>{
         if(BirdBottom>0){
             gameTimerId=setInterval(()=>{
-                setBirdBottom(BirdBottom>BirdBottom-gravity)
+                setBirdBottom(BirdBottom=>BirdBottom-gravity)
             },30)
         }
         
@@ -25,7 +25,10 @@ export default function App() {
     
   return (
     <View style={styles.container}>
-      <Bird />
+      <Bird 
+        birdBottom={BirdBottom}
+      birdLeft={birdLeft}
+      />
     </View>
   );
 }
