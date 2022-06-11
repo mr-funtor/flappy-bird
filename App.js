@@ -7,9 +7,11 @@ export default function App() {
     const screenWidth=Dimensions.get('screen').width;
     const screenHeight=Dimensions.get('screen').height;
     const birdLeft= screenWidth/2;
-    const [BirdBottom, setBirdBottom]= useState(screenHeight/2); 
+    const [BirdBottom, setBirdBottom]= useState(screenHeight/2);
+    const [obstaclesLeft, setObstacles]=useState(screenWidth)
     const gravity=3;
     let gameTimerId;
+    let obstaclesLeftTimerId
     
     useEffect(()=>{
         if(BirdBottom>0){
@@ -22,6 +24,19 @@ export default function App() {
             clearInterval(gameTimerId)
         }
     },[BirdBottom])
+    
+    //start first obstacles
+    useEffect(()=>{
+        if(obstaclesLeft>0){
+            obstaclesLeftTimerId=setInterval(()=>{
+                setObstacles(obstaclesLeft=>obstaclesLeft-5)
+            },30)
+        }
+        
+        return()=>{
+            clearInterval(obstaclesLeftTimerId)
+        }
+    },[obstaclesLeft])
     
   return (
     <View style={styles.container}>
