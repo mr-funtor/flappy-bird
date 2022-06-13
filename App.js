@@ -12,13 +12,15 @@ export default function App() {
     const birdLeft= screenWidth/2;
     const [BirdBottom, setBirdBottom]= useState(screenHeight/2);
     const [obstaclesLeft, setObstaclesLeft]=useState(screenWidth);
+    const [obstaclesLeftTwo, setObstaclesLeftTwo]=useState(screenWidth + screenWidth/2);
     const obstacleWidth=60;
     const obstacleHeight= 300;
     const gap=200;
     const gravity=3;
     let gameTimerId;
     let obstaclesLeftTimerId
-    console.log(obstaclesLeft)
+    let obstaclesLeftTimerIdTwo
+
     
     useEffect(()=>{
         if(BirdBottom>0){
@@ -47,9 +49,30 @@ export default function App() {
         
         //this loops the obstacles
         setObstaclesLeft(screenWidth)
-        
-        
     },[obstaclesLeft])
+    
+    
+    //start second obstacles
+    useEffect(()=>{
+        if(obstaclesLeftTwo> -obstacleWidth){
+            obstaclesLeftTimerIdTwo=setInterval(()=>{
+                setObstaclesLeftTwo(obstaclesLeftTwo=>obstaclesLeftTwo-5)
+            },30)
+            
+            //this stops the obstacles when the it goes out of screen
+            return()=>{
+                clearInterval(obstaclesLeftTimerIdTwo)
+            }
+        }
+        
+        //this loops the obstacles
+        setObstaclesLeftTwo(screenWidth)
+    },[obstaclesLeftTwo])
+    
+    
+    
+    
+    
     
   return (
     <View style={styles.container}>
@@ -63,6 +86,15 @@ export default function App() {
       obstacleWidth={obstacleWidth} 
       obstacleHeight={obstacleHeight}
       gap={gap}
+      color={"blue"}
+      />
+      
+      <Obstacles
+      obstaclesLeft={obstaclesLeftTwo}
+      obstacleWidth={obstacleWidth} 
+      obstacleHeight={obstacleHeight}
+      gap={gap}
+      color={"green"}
       />
       
     </View>
