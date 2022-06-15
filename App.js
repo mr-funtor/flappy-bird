@@ -13,6 +13,8 @@ export default function App() {
     const [BirdBottom, setBirdBottom]= useState(screenHeight/2);
     const [obstaclesLeft, setObstaclesLeft]=useState(screenWidth);
     const [obstaclesLeftTwo, setObstaclesLeftTwo]=useState(screenWidth + screenWidth/2);
+    const [obstaclesNegHeight,setObstaclesNegHeight]=useState(0);
+    const [obstaclesNegHeightTwo,setObstaclesNegHeightTwo]=useState(0);
     const obstacleWidth=60;
     const obstacleHeight= 300;
     const gap=200;
@@ -49,6 +51,7 @@ export default function App() {
         
         //this loops the obstacles
         setObstaclesLeft(screenWidth)
+        setObstaclesNegHeight(-Math.random()*100)
     },[obstaclesLeft])
     
     
@@ -67,6 +70,7 @@ export default function App() {
         
         //this loops the obstacles
         setObstaclesLeftTwo(screenWidth)
+        setObstaclesNegHeightTwo(-Math.random()*100)
     },[obstaclesLeftTwo])
     
     
@@ -85,6 +89,7 @@ export default function App() {
       obstaclesLeft={obstaclesLeft}
       obstacleWidth={obstacleWidth} 
       obstacleHeight={obstacleHeight}
+      randomBottom={obstaclesNegHeight}
       gap={gap}
       color={"blue"}
       />
@@ -93,6 +98,7 @@ export default function App() {
       obstaclesLeft={obstaclesLeftTwo}
       obstacleWidth={obstacleWidth} 
       obstacleHeight={obstacleHeight}
+      randomBottom={obstaclesNegHeightTwo}
       gap={gap}
       color={"green"}
       />
