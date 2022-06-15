@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions, TouchableWithoutFeedback,Text } from 'react-native';
 
 //components
 import Bird from './components/Bird';
@@ -10,7 +10,7 @@ export default function App() {
     const screenWidth=Dimensions.get('screen').width;
     const screenHeight=Dimensions.get('screen').height;
     const birdLeft= screenWidth/2;
-    const [BirdBottom, setBirdBottom]= useState(screenHeight/2);
+    const [BirdBottom, setBirdBottom]= useState(screenHeight/2-20);
     const [obstaclesLeft, setObstaclesLeft]=useState(screenWidth);
     const [obstaclesLeftTwo, setObstaclesLeftTwo]=useState(screenWidth + screenWidth/2);
     const [obstaclesNegHeight,setObstaclesNegHeight]=useState(0);
@@ -22,6 +22,8 @@ export default function App() {
     let gameTimerId;
     let obstaclesLeftTimerId
     let obstaclesLeftTimerIdTwo
+    const [isGameOver, setIsGameOver]= useState(false)
+    const [score,setScore]=useState(0);
 
     
     useEffect(()=>{
@@ -35,6 +37,12 @@ export default function App() {
             clearInterval(gameTimerId)
         }
     },[BirdBottom])
+    
+    const jump=()=>{
+        if(!isGameOver && (BirdBottom<screenHeight)){
+            setBirdBottom(birdBottom=>birdBottom+50)
+        }
+    }
     
     //start first obstacles
     useEffect(()=>{
@@ -52,6 +60,7 @@ export default function App() {
         //this loops the obstacles
         setObstaclesLeft(screenWidth)
         setObstaclesNegHeight(-Math.random()*100)
+        setScore(score=>score+1)
     },[obstaclesLeft])
     
     
@@ -71,39 +80,69 @@ export default function App() {
         //this loops the obstacles
         setObstaclesLeftTwo(screenWidth)
         setObstaclesNegHeightTwo(-Math.random()*100)
+        setScore(score=>score+1)
     },[obstaclesLeftTwo])
     
     
+    //check for collisions
+    useEffect(()=>{
+        
+        if (
+            ((BirdBottom < (obstaclesNegHeight + obstacleHeight + 30) ||
+            BirdBottom > (obstaclesNegHeight + obstacleHeight + gap -30)) &&
+            (obstaclesLeft > screenWidth/2 -30 && obstaclesLeft < screenWidth/2 + 30 )
+            )
+            || 
+            ((BirdBottom < (obstaclesNegHeightTwo + obstacleHeight + 30) ||
+            BirdBottom > (obstaclesNegHeightTwo + obstacleHeight + gap -30)) &&
+            (obstaclesLeftTwo > screenWidth/2 -30 && obstaclesLeftTwo < screenWidth/2 + 30 )
+            )
+        ) 
+        {
+            gameOver()
+
+        }
+    })
     
     
+    const gameOver = () => {
+      clearInterval(gameTimerId)
+      clearInterval(obstaclesLeftTimerId)
+      clearInterval(obstaclesLeftTimerIdTwo)
+        setIsGameOver(true)
+    }
+
     
     
   return (
-    <View style={styles.container}>
-      <Bird 
-        birdBottom={BirdBottom}
-      birdLeft={birdLeft}
-      />
-      
+      <TouchableWithoutFeedback onPress={jump}>
+        <View style={styles.container}>
+        {isGameOver && <Text>{score}</Text>}
+          <Bird 
+            birdBottom={BirdBottom}
+          birdLeft={birdLeft}
+          />
+
+              <Obstacles
+          obstaclesLeft={obstaclesLeft}
+          obstacleWidth={obstacleWidth} 
+          obstacleHeight={obstacleHeight}
+          randomBottom={obstaclesNegHeight}
+          gap={gap}
+          color={"blue"}
+          />
+
           <Obstacles
-      obstaclesLeft={obstaclesLeft}
-      obstacleWidth={obstacleWidth} 
-      obstacleHeight={obstacleHeight}
-      randomBottom={obstaclesNegHeight}
-      gap={gap}
-      color={"blue"}
-      />
-      
-      <Obstacles
-      obstaclesLeft={obstaclesLeftTwo}
-      obstacleWidth={obstacleWidth} 
-      obstacleHeight={obstacleHeight}
-      randomBottom={obstaclesNegHeightTwo}
-      gap={gap}
-      color={"green"}
-      />
-      
-    </View>
+          obstaclesLeft={obstaclesLeftTwo}
+          obstacleWidth={obstacleWidth} 
+          obstacleHeight={obstacleHeight}
+          randomBottom={obstaclesNegHeightTwo}
+          gap={gap}
+          color={"green"}
+          />
+
+        </View>
+      </TouchableWithoutFeedback>
   );
 }
 
